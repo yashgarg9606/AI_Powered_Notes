@@ -60,6 +60,34 @@ Use AI to:
 
 ---
 
+## 📁 Project Structure
+
+```text
+app/
+├─ app/                 # Protected authenticated routes
+├─ login/               # Login page
+├─ signup/              # Signup page
+├─ api/                 # Backend API endpoints
+│  ├─ notes/            # CRUD for notes
+│  ├─ tags/             # CRUD for tags
+│  └─ ai/               # AI enhancement endpoints
+└─ page.tsx             # Landing page
+
+components/
+├─ auth/                # Authentication UI components
+├─ notes/               # Notes UI components
+├─ notes-app.tsx        # Main notes workspace
+├─ note-editor.tsx      # Editor + autosave
+├─ notes-list.tsx       # Sidebar with notes
+└─ ai-enhance-button.tsx# AI action buttons
+
+lib/
+├─ supabase-client.ts   # Client-side Supabase SDK
+├─ supabase-server.ts   # Server-side Supabase SDK
+└─ auth-utils.ts        # User session helpers
+```
+---
+
 ## 🧭 Future Enhancements
 
 Planned improvements:
