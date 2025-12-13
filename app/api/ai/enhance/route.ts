@@ -1,9 +1,18 @@
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+
 import { NextRequest, NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/auth-utils";
 
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
 export async function POST(req: NextRequest) {
+
+  console.log("Groq key present:", !!process.env.GROQ_API_KEY);
+  console.log("Groq endpoint:", "https://api.groq.com/openai/v1/chat/completions");
+
+
   try {
     const user = await getCurrentUser();
     if (!user) {
@@ -37,21 +46,23 @@ export async function POST(req: NextRequest) {
         );
     }
 
-    const response = await fetch(GROQ_API_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: "llama-3.1-8b-instant", // ✅ ACTIVE & FAST
-        messages: [
-          { role: "system", content: "You are a helpful writing assistant." },
-          { role: "user", content: prompt },
-        ],
-        temperature: 0.4,
-      }),
-    });
+const controller = new AbortController();
+setTimeout(() => controller.abort(), 12_000);
+
+const response = await fetch(GROQ_API_URL, {
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    model: "llama-3.1-8b-instant",
+    messages: [{ role: "user", content: prompt }],
+    temperature: 0.4,
+  }),
+  signal: controller.signal,
+});
+
 
     const data = await response.json();
 
