@@ -37,6 +37,8 @@ export function SignupForm() {
 
       if (signUpError) throw signUpError
 
+      // 🔑 REQUIRED FOR NEXT.JS + SUPABASE: sync auth cookies to server
+      router.refresh()
       router.push("/app")
     } catch (err) {
       setError(err instanceof Error ? err.message : "An error occurred")
