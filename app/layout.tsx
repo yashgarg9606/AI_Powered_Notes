@@ -10,7 +10,6 @@ const _geistMono = Geist_Mono({ subsets: ["latin"] })
 export const metadata: Metadata = {
   title: "NotesAI - AI-Powered Note Taking",
   description: "Write better notes with AI enhancement, tagging, and search",
-  generator: "v0.app",
   icons: {
     icon: [
       {
@@ -26,7 +25,7 @@ export const metadata: Metadata = {
         type: "image/svg+xml",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/icon-32x32.png",
   },
 }
 
