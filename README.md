@@ -55,7 +55,7 @@ Use AI to:
 | **Backend** | Next.js API Routes |
 | **Database** | Supabase (PostgreSQL + RLS) |
 | **Authentication** | Supabase Auth |
-| **AI Engine** | Ollama (local) or Vercel AI SDK + OpenAI |
+| **AI Engine** | GROQ AI |
 | **Data Fetching** | React Server Components, Server Actions |
 
 ---
