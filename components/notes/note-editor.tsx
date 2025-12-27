@@ -31,8 +31,24 @@ export function NoteEditor({ note, onUpdate, onDelete, tags, onTagsChange }: Not
   const [selectedTags, setSelectedTags] = useState(note.note_tags?.map((nt) => nt.tag_id) || [])
   const [saving, setSaving] = useState(false)
   const { toast } = useToast()
+  const [isInitialMount, setIsInitialMount] = useState(true)
 
-  // Auto-save with debounce
+  // Sync local state when switching to a different note
+  useEffect(() => {
+    setTitle(note.title)
+    setContent(note.content)
+    setSelectedTags(note.note_tags?.map((nt) => nt.tag_id) || [])
+    setIsInitialMount(true)
+  }, [note.id])
+
+  // Reset initial mount flag after state sync
+  useEffect(() => {
+    if (isInitialMount) {
+      setIsInitialMount(false)
+    }
+  }, [isInitialMount])
+
+  // Auto-save with debounce - use ref to avoid dependency on onUpdate
   const debouncedSave = useCallback(
     debounce(async (noteId: string, t: string, c: string, tagIds: string[]) => {
       try {
@@ -56,13 +72,15 @@ export function NoteEditor({ note, onUpdate, onDelete, tags, onTagsChange }: Not
         setSaving(false)
       }
     }, 1000),
-    [onUpdate],
+    [], // Empty deps - onUpdate is stable from parent
   )
 
-  // Save on title/content/tags change
+  // Save on title/content/tags change, but NOT on initial mount or when note prop changes externally
   useEffect(() => {
-    debouncedSave(note.id, title, content, selectedTags)
-  }, [title, content, selectedTags, debouncedSave, note.id])
+    if (!isInitialMount) {
+      debouncedSave(note.id, title, content, selectedTags)
+    }
+  }, [title, content, selectedTags, note.id, debouncedSave, isInitialMount])
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this note?")) {

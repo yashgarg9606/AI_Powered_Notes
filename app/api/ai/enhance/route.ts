@@ -1,12 +1,24 @@
 import { generateText } from "ai"
+import { createGroq } from "@ai-sdk/groq"
 import { getCurrentUser } from "@/lib/auth-utils"
 import { type NextRequest, NextResponse } from "next/server"
+
+const groq = createGroq({
+  apiKey: process.env.GROQ_API_KEY,
+})
 
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser()
     if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+    }
+
+    if (!process.env.GROQ_API_KEY) {
+      return NextResponse.json(
+        { error: "GROQ_API_KEY environment variable is not set" },
+        { status: 500 }
+      )
     }
 
     const { content, type } = await request.json()
@@ -43,7 +55,7 @@ Return the expanded version, nothing else.`
     }
 
     const { text } = await generateText({
-      model: "openai/gpt-4o-mini",
+      model: groq("llama-3.1-8b-instant"),
       prompt,
     })
 

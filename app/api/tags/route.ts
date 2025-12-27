@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const supabase = getSupabaseServer()
+    const supabase = await getSupabaseServer()
     const { data, error } = await supabase.from("tags").select("*").eq("user_id", user.id).order("name")
 
     if (error) throw error
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
 
     const { name, color } = await request.json()
 
-    const supabase = getSupabaseServer()
+    const supabase = await getSupabaseServer()
     const { data, error } = await supabase
       .from("tags")
       .insert({

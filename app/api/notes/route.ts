@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const supabase = getSupabaseServer()
+    const supabase = await getSupabaseServer()
     const searchParams = request.nextUrl.searchParams
     const search = searchParams.get("search")
     const tagId = searchParams.get("tag")
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     const { title, content, tagIds } = await request.json()
 
-    const supabase = getSupabaseServer()
+    const supabase = await getSupabaseServer()
     const { data: note, error: noteError } = await supabase
       .from("notes")
       .insert({

@@ -52,11 +52,18 @@ export function NotesApp({ userId }: NotesAppProps) {
       const data = await response.json()
       setNotes(data)
 
-      if (data.length === 0 && !selectedNote) {
-        setSelectedNote(null)
-      } else if (data.length > 0 && !selectedNote) {
-        setSelectedNote(data[0])
-      }
+      // Update selected note only if it's missing or no longer exists
+      setSelectedNote((currentSelected) => {
+        if (data.length === 0) {
+          return null
+        }
+        const currentSelectedId = currentSelected?.id
+        const noteStillExists = data.find((n: Note) => n.id === currentSelectedId)
+        if (!currentSelectedId || !noteStillExists) {
+          return data[0]
+        }
+        return currentSelected
+      })
     } catch (error) {
       console.error("Failed to fetch notes:", error)
       toast({
@@ -67,7 +74,7 @@ export function NotesApp({ userId }: NotesAppProps) {
     } finally {
       setLoading(false)
     }
-  }, [search, selectedTag, selectedNote, toast])
+  }, [search, selectedTag, toast])
 
   // Fetch tags
   const fetchTags = useCallback(async () => {
@@ -85,8 +92,12 @@ export function NotesApp({ userId }: NotesAppProps) {
   // Initial load and refresh on search/filter change
   useEffect(() => {
     fetchNotes()
+  }, [fetchNotes])
+  
+  // Fetch tags only once on mount
+  useEffect(() => {
     fetchTags()
-  }, [search, selectedTag, fetchNotes, fetchTags])
+  }, [fetchTags])
 
   // Create new note
   const handleCreateNote = async () => {

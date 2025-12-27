@@ -10,7 +10,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     }
 
     const { id } = await params
-    const supabase = getSupabaseServer()
+    const supabase = await getSupabaseServer()
     const { data, error } = await supabase
       .from("notes")
       .select(`
@@ -48,7 +48,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
     const { id } = await params
     const { title, content, tagIds } = await request.json()
 
-    const supabase = getSupabaseServer()
+    const supabase = await getSupabaseServer()
 
     // Verify note ownership
     const { data: note, error: fetchError } = await supabase.from("notes").select("user_id").eq("id", id).single()
@@ -102,7 +102,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
     }
 
     const { id } = await params
-    const supabase = getSupabaseServer()
+    const supabase = await getSupabaseServer()
 
     // Verify note ownership
     const { data: note, error: fetchError } = await supabase.from("notes").select("user_id").eq("id", id).single()
